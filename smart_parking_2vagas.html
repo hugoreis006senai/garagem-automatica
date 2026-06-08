@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Parking IoT – 2 Vagas + Cancela</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mqtt/5.0.3/mqtt.min.js"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #0a0a0f; color: #e2e8f0;
+  font-family: 'Segoe UI', sans-serif;
+  min-height: 100vh; display: flex; flex-direction: column;
+  align-items: center; padding: 24px 16px;
+}
+h1 { font-size: 1.8rem; margin-bottom: 4px; color: #7c3aed; }
+.sub { color: #64748b; font-size: 0.8rem; margin-bottom: 16px; }
+.status-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; font-size: 0.75rem; }
+.dot { width: 9px; height: 9px; border-radius: 50%; background: #64748b; }
+.dot.ok  { background: #22c55e; box-shadow: 0 0 8px #22c55e; animation: blink 2s infinite; }
+.dot.err { background: #ef4444; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.5} }
+#conn-txt { color: #64748b; }
+#conn-txt.ok  { color: #22c55e; }
+#conn-txt.err { color: #ef4444; }
+
+/* Cancela Panel */
+.cancela-panel {
+  background: #111118; border: 2px solid #1e1e2e; border-radius: 10px;
+  padding: 18px 22px; width: 100%; max-width: 500px; margin-bottom: 16px;
+}
+.cancela-panel.aberta  { border-color: #22c55e; }
+.cancela-panel.fechada { border-color: #ef4444; }
+.cancela-panel.manutencao { border-color: #f97316; }
+.cancela-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.cancela-title { font-size: 0.65rem; letter-spacing: 3px; color: #64748b; font-family: monospace; }
+.cancela-badge {
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 1px; padding: 3px 10px;
+  border-radius: 20px; font-family: monospace;
+}
+.cancela-badge.aberta   { background: rgba(34,197,94,0.15); color: #22c55e; border: 1px solid rgba(34,197,94,0.3); }
+.cancela-badge.fechada  { background: rgba(239,68,68,0.15);  color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
+.cancela-badge.manutencao { background: rgba(249,115,22,0.15); color: #f97316; border: 1px solid rgba(249,115,22,0.3); }
+.cancela-icon-row { text-align: center; font-size: 2.4rem; margin-bottom: 14px; }
+.cancela-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn-mnt {
+  flex: 1; min-width: 100px; padding: 10px 14px; border-radius: 6px;
+  border: none; cursor: pointer; font-weight: 700; font-size: 0.8rem;
+  font-family: 'Segoe UI', sans-serif; transition: all 0.2s;
+}
+.btn-abrir  { background: rgba(34,197,94,0.15);  color: #22c55e; border: 1px solid rgba(34,197,94,0.4); }
+.btn-fechar { background: rgba(239,68,68,0.15);   color: #ef4444; border: 1px solid rgba(239,68,68,0.4); }
+.btn-auto   { background: rgba(124,58,237,0.15);  color: #a78bfa; border: 1px solid rgba(124,58,237,0.4); }
+.btn-mnt:hover { filter: brightness(1.3); transform: translateY(-1px); }
+.btn-mnt:active { transform: translateY(0); }
+.modo-tag { text-align: center; font-size: 0.65rem; letter-spacing: 2px; margin-top: 10px; font-family: monospace; }
+.modo-tag.auto { color: #22c55e; }
+.modo-tag.manual { color: #f97316; }
+
+.total-bar {
+  background: #111118; border: 1px solid #1e1e2e; border-radius: 8px;
+  padding: 14px 28px; text-align: center; margin-bottom: 20px;
+  width: 100%; max-width: 500px;
+}
+.total-bar span { font-size: 2.2rem; font-weight: 700; color: #22c55e; }
+.total-bar small { display: block; font-size: 0.7rem; color: #64748b; letter-spacing: 2px; }
+
+.vagas-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  width: 100%; max-width: 500px; margin-bottom: 20px;
+}
+.vaga-card {
+  background: #111118; border: 2px solid #1e1e2e; border-radius: 12px;
+  padding: 24px 16px; text-align: center; transition: border-color 0.4s, background 0.4s;
+}
+.vaga-card.livre   { border-color: #22c55e; background: rgba(34,197,94,0.05); }
+.vaga-card.ocupado { border-color: #ef4444; background: rgba(239,68,68,0.05); }
+.vaga-num { font-size: 0.65rem; letter-spacing: 3px; color: #64748b; margin-bottom: 10px; }
+.vaga-icon { font-size: 2.8rem; margin-bottom: 8px; }
+.vaga-status { font-size: 1rem; font-weight: 700; color: #64748b; letter-spacing: 2px; }
+.vaga-card.livre   .vaga-status { color: #22c55e; }
+.vaga-card.ocupado .vaga-status { color: #ef4444; }
+
+.log-box {
+  background: #080810; border: 1px solid #1e1e2e; border-radius: 6px;
+  width: 100%; max-width: 500px; height: 130px; overflow-y: auto;
+  padding: 10px 14px; font-family: monospace; font-size: 0.72rem; color: #64748b;
+}
+.log-entry { margin-bottom: 3px; }
+.log-ts  { color: #475569; margin-right: 6px; }
+.log-sys { color: #7c3aed; }
+.log-sub { color: #06b6d4; }
+.log-cmd { color: #f97316; }
+.log-err { color: #ef4444; }
+footer { margin-top: 20px; font-size: 0.65rem; letter-spacing: 2px; color: #1e1e2e; }
+</style>
+</head>
+<body>
+
+<h1>🅿️ Smart Parking IoT</h1>
+<div class="sub">SENAI · Grupo 5 · 2 Vagas + Cancela MG90S · Tempo Real</div>
+
+<div class="status-bar">
+  <div class="dot" id="dot"></div>
+  <span id="conn-txt">Conectando...</span>
+</div>
+
+<!-- PAINEL DA CANCELA -->
+<div class="cancela-panel" id="cancela-panel">
+  <div class="cancela-header">
+    <span class="cancela-title">⚙️ CANCELA MG90S</span>
+    <span class="cancela-badge aberta" id="cancela-badge">AGUARDANDO</span>
+  </div>
+  <div class="cancela-icon-row" id="cancela-icon">🚧</div>
+  <div class="cancela-btns">
+    <button class="btn-mnt btn-abrir"  onclick="cmdCancela('ABRIR')">🔧 ABRIR CANCELA</button>
+    <button class="btn-mnt btn-fechar" onclick="cmdCancela('FECHAR')">🔒 FECHAR CANCELA</button>
+    <button class="btn-mnt btn-auto"   onclick="cmdCancela('AUTO')">🤖 MODO AUTO</button>
+  </div>
+  <div class="modo-tag auto" id="modo-tag">// MODO: AUTOMÁTICO</div>
+</div>
+
+<div class="total-bar">
+  <span id="total-livre">–</span>
+  <small>VAGAS DISPONÍVEIS</small>
+</div>
+
+<div class="vagas-grid">
+  <div class="vaga-card" id="card-v1">
+    <div class="vaga-num">VAGA 01</div>
+    <div class="vaga-icon">🚗</div>
+    <div class="vaga-status" id="status-v1">AGUARDANDO</div>
+  </div>
+  <div class="vaga-card" id="card-v2">
+    <div class="vaga-num">VAGA 02</div>
+    <div class="vaga-icon">🚗</div>
+    <div class="vaga-status" id="status-v2">AGUARDANDO</div>
+  </div>
+</div>
+
+<div class="log-box" id="log"></div>
+<footer>SENAI · IoT · Grupo 5 · 2025</footer>
+
+<script>
+const TOPIC_V1     = "senai/g93611/grupo5/parking/vaga1";
+const TOPIC_V2     = "senai/g93611/grupo5/parking/vaga2";
+const TOPIC_TOTAL  = "senai/g93611/grupo5/parking/total_livre";
+const TOPIC_CS     = "senai/g93611/grupo5/parking/cancela/status";
+const TOPIC_CMD    = "senai/g93611/grupo5/parking/cancela/cmd";
+const BROKER_URL   = "ws://broker.hivemq.com:8000/mqtt";
+
+const dot       = document.getElementById('dot');
+const connTxt   = document.getElementById('conn-txt');
+const cardV1    = document.getElementById('card-v1');
+const cardV2    = document.getElementById('card-v2');
+const statusV1  = document.getElementById('status-v1');
+const statusV2  = document.getElementById('status-v2');
+const totalEl   = document.getElementById('total-livre');
+const logBox    = document.getElementById('log');
+const cancelaPanel = document.getElementById('cancela-panel');
+const cancelaBadge = document.getElementById('cancela-badge');
+const cancelaIcon  = document.getElementById('cancela-icon');
+const modoTag      = document.getElementById('modo-tag');
+
+function log(msg, type='sys') {
+  const t = new Date().toLocaleTimeString('pt-BR', {hour12:false});
+  const d = document.createElement('div');
+  d.className = 'log-entry';
+  d.innerHTML = `<span class="log-ts">[${t}]</span><span class="log-${type}">${msg}</span>`;
+  logBox.appendChild(d);
+  logBox.scrollTop = logBox.scrollHeight;
+  while (logBox.children.length > 80) logBox.removeChild(logBox.firstChild);
+}
+
+function atualizarVaga(card, statusEl, livre) {
+  card.className = 'vaga-card ' + (livre ? 'livre' : 'ocupado');
+  statusEl.textContent = livre ? 'LIVRE' : 'OCUPADO';
+}
+
+function atualizarCancela(statusStr) {
+  const aberta    = statusStr.includes('ABERTA');
+  const manutencao = statusStr.includes('MANUTENCAO');
+  const modo = manutencao ? 'manutencao' : (aberta ? 'aberta' : 'fechada');
+  cancelaPanel.className = 'cancela-panel ' + modo;
+  cancelaBadge.className = 'cancela-badge ' + modo;
+  cancelaBadge.textContent = statusStr;
+  cancelaIcon.textContent  = aberta ? '🔓' : '🔒';
+  if (manutencao) {
+    modoTag.textContent = '// MODO: MANUTENÇÃO MANUAL';
+    modoTag.className = 'modo-tag manual';
+  } else if (statusStr === 'MODO AUTOMATICO' || !manutencao) {
+    modoTag.textContent = '// MODO: AUTOMÁTICO';
+    modoTag.className = 'modo-tag auto';
+  }
+}
+
+const clientId = 'senai_parking_web_' + Math.random().toString(36).substr(2,6);
+const client = mqtt.connect(BROKER_URL, { clientId, clean: true });
+
+client.on('connect', () => {
+  dot.className = 'dot ok';
+  connTxt.className = 'ok';
+  connTxt.textContent = 'CONECTADO';
+  log('Conectado ao broker HiveMQ!', 'sys');
+  client.subscribe([TOPIC_V1, TOPIC_V2, TOPIC_TOTAL, TOPIC_CS], { qos: 0 });
+  log('Aguardando dados do ESP8266...', 'sys');
+});
+
+client.on('message', (topic, payload) => {
+  const msg = payload.toString();
+  log(`← ${topic.split('/').pop()}: ${msg}`, 'sub');
+
+  if (topic === TOPIC_TOTAL) {
+    const n = parseInt(msg);
+    totalEl.textContent = isNaN(n) ? '–' : n;
+    totalEl.style.color = n === 0 ? '#ef4444' : '#22c55e';
+  }
+  if (topic === TOPIC_CS) {
+    atualizarCancela(msg);
+  }
+  if (topic === TOPIC_V1 || topic === TOPIC_V2) {
+    try {
+      const data = JSON.parse(msg);
+      const livre = data.livre === true;
+      if (topic === TOPIC_V1) atualizarVaga(cardV1, statusV1, livre);
+      else                     atualizarVaga(cardV2, statusV2, livre);
+    } catch(e) {
+      const livre = msg.toUpperCase().includes('LIVRE');
+      if (topic === TOPIC_V1) atualizarVaga(cardV1, statusV1, livre);
+      else                     atualizarVaga(cardV2, statusV2, livre);
+    }
+  }
+});
+
+function cmdCancela(cmd) {
+  if (!client.connected) { log('MQTT não conectado!', 'err'); return; }
+  client.publish(TOPIC_CMD, cmd);
+  log(`→ CMD cancela: ${cmd}`, 'cmd');
+}
+
+client.on('error', err => {
+  dot.className = 'dot err';
+  connTxt.className = 'err';
+  connTxt.textContent = 'ERRO';
+  log('Erro MQTT: ' + err.message, 'err');
+});
+client.on('close', () => {
+  dot.className = 'dot err';
+  connTxt.textContent = 'Reconectando...';
+  log('Conexão encerrada.', 'err');
+});
+</script>
+</body>
+</html>

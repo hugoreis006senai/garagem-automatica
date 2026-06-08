@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Parking IoT – Guia Completo (2 Vagas + Cancela MG90S)</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap');
+
+:root {
+  --bg: #0a0a0f;
+  --surface: #111118;
+  --border: #1e1e2e;
+  --accent: #7c3aed;
+  --accent2: #06b6d4;
+  --green: #22c55e;
+  --red: #ef4444;
+  --amber: #f59e0b;
+  --text: #e2e8f0;
+  --muted: #64748b;
+  --code-bg: #0d0d16;
+  --orange: #f97316;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Syne', sans-serif;
+  line-height: 1.7;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero {
+  text-align: center;
+  padding: 60px 0 48px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 48px;
+}
+
+.hero-tag {
+  display: inline-block;
+  background: rgba(124,58,237,0.15);
+  border: 1px solid rgba(124,58,237,0.4);
+  color: #a78bfa;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 3px;
+  padding: 4px 12px;
+  border-radius: 2px;
+  margin-bottom: 16px;
+}
+
+.hero h1 {
+  font-size: clamp(2rem, 6vw, 3.6rem);
+  font-weight: 800;
+  line-height: 1.05;
+  background: linear-gradient(135deg, #e2e8f0 0%, #7c3aed 50%, #06b6d4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 12px;
+}
+
+.hero p { color: var(--muted); font-size: 0.95rem; font-family: 'JetBrains Mono', monospace; }
+
+.toc {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 4px;
+  padding: 24px 28px;
+  margin-bottom: 48px;
+}
+
+.toc h2 { font-size: 0.65rem; letter-spacing: 3px; color: var(--accent); font-family: 'JetBrains Mono', monospace; margin-bottom: 14px; }
+.toc ol { padding-left: 18px; }
+.toc li { margin-bottom: 6px; font-size: 0.9rem; }
+.toc a { color: var(--text); text-decoration: none; transition: color 0.2s; }
+.toc a:hover { color: var(--accent2); }
+
+.section { margin-bottom: 56px; scroll-margin-top: 24px; }
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 28px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-num {
+  background: var(--accent);
+  color: white;
+  width: 34px; height: 34px;
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; font-weight: 700; flex-shrink: 0;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.section-num.orange { background: var(--orange); }
+
+.section-title { font-size: 1.4rem; font-weight: 700; }
+
+.info-box {
+  border-radius: 4px;
+  padding: 16px 20px;
+  margin: 16px 0;
+  font-size: 0.88rem;
+  border-left: 3px solid;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.info-box.tip    { background: rgba(6,182,212,0.08);  border-color: var(--accent2); color: #7dd3fc; }
+.info-box.warn   { background: rgba(245,158,11,0.08); border-color: var(--amber);  color: #fcd34d; }
+.info-box.danger { background: rgba(239,68,68,0.08);  border-color: var(--red);    color: #fca5a5; }
+.info-box.ok     { background: rgba(34,197,94,0.08);  border-color: var(--green);  color: #86efac; }
+.info-box.orange { background: rgba(249,115,22,0.08); border-color: var(--orange); color: #fdba74; }
+
+.info-box strong { font-weight: 700; }
+
+table { width: 100%; border-collapse: collapse; font-size: 0.87rem; margin: 16px 0; font-family: 'JetBrains Mono', monospace; }
+th { background: rgba(124,58,237,0.15); color: #a78bfa; padding: 10px 14px; text-align: left; font-size: 0.7rem; letter-spacing: 2px; border-bottom: 1px solid var(--border); }
+td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text); }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(255,255,255,0.02); }
+
+.code-wrap { position: relative; margin: 20px 0; }
+.code-label {
+  display: inline-block;
+  background: var(--accent);
+  color: white;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 2px;
+  padding: 3px 10px;
+  border-radius: 2px 2px 0 0;
+  margin-bottom: -1px;
+}
+.code-label.orange { background: var(--orange); }
+
+pre {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 0 4px 4px 4px;
+  padding: 20px 22px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  line-height: 1.7;
+  white-space: pre;
+}
+
+.kw  { color: #c084fc; }
+.cm  { color: #4a5568; font-style: italic; }
+.str { color: #86efac; }
+.num { color: #67e8f9; }
+.fn  { color: #fbbf24; }
+.pp  { color: #fb923c; }
+.var { color: #e2e8f0; }
+
+.wiring-diagram { background: var(--code-bg); border: 1px solid var(--border); border-radius: 4px; padding: 28px; margin: 20px 0; overflow-x: auto; }
+.wiring-diagram pre { background: transparent; border: none; padding: 0; font-size: 0.78rem; color: #cbd5e1; }
+
+.steps { display: flex; flex-direction: column; gap: 12px; margin: 16px 0; }
+.step { display: flex; gap: 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 16px 18px; }
+.step-num {
+  background: rgba(6,182,212,0.15); color: var(--accent2);
+  border: 1px solid rgba(6,182,212,0.3);
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem; font-weight: 700; flex-shrink: 0;
+  font-family: 'JetBrains Mono', monospace;
+}
+.step-num.orange { background: rgba(249,115,22,0.15); color: var(--orange); border-color: rgba(249,115,22,0.3); }
+.step-body { flex: 1; font-size: 0.9rem; }
+.step-body strong { color: var(--accent2); }
+.step-body strong.orange { color: var(--orange); }
+
+.component-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin: 16px 0; }
+.comp-card { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 16px; }
+.comp-card.highlight { border-color: var(--orange); background: rgba(249,115,22,0.05); }
+.comp-card .comp-icon { font-size: 1.6rem; margin-bottom: 8px; }
+.comp-card .comp-name { font-weight: 700; font-size: 0.9rem; margin-bottom: 4px; }
+.comp-card .comp-qty  { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--accent2); }
+.comp-card .comp-desc { font-size: 0.78rem; color: var(--muted); margin-top: 4px; }
+
+.pin { display: inline-block; background: rgba(124,58,237,0.2); border: 1px solid rgba(124,58,237,0.5); color: #c4b5fd; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; padding: 1px 7px; border-radius: 3px; }
+.pin.gpio   { background: rgba(6,182,212,0.15); border-color: rgba(6,182,212,0.4); color: #67e8f9; }
+.pin.power  { background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.4); color: #fca5a5; }
+.pin.gnd    { background: rgba(100,116,139,0.2); border-color: rgba(100,116,139,0.4); color: #94a3b8; }
+.pin.orange { background: rgba(249,115,22,0.15); border-color: rgba(249,115,22,0.4); color: #fdba74; }
+
+/* ── Cancela Status Widget ── */
+.cancela-widget {
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  padding: 20px 24px;
+  margin: 16px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.cancela-widget.aberta  { border-color: var(--green); }
+.cancela-widget.fechada { border-color: var(--red); }
+.cancela-label { font-size: 0.65rem; letter-spacing: 3px; color: var(--muted); font-family: 'JetBrains Mono', monospace; margin-bottom: 4px; }
+.cancela-status { font-size: 1.4rem; font-weight: 700; }
+.cancela-status.aberta  { color: var(--green); }
+.cancela-status.fechada { color: var(--red); }
+.cancela-icon { font-size: 2.8rem; }
+
+footer { text-align: center; padding-top: 32px; border-top: 1px solid var(--border); font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 2px; color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-tag">SENAI · GRUPO 5 · IOT · 2025</div>
+    <h1>Smart Parking IoT<br>2 Vagas + Cancela MG90S</h1>
+    <p>// Guia completo — hardware + firmware + cancela servo + dashboard //</p>
+  </div>
+
+  <!-- SUMÁRIO -->
+  <div class="toc">
+    <h2>// SUMÁRIO</h2>
+    <ol>
+      <li><a href="#s1">Visão Geral do Sistema</a></li>
+      <li><a href="#s2">Lista de Componentes e Materiais</a></li>
+      <li><a href="#s3">Configuração da Arduino IDE</a></li>
+      <li><a href="#s4">Instalação das Bibliotecas</a></li>
+      <li><a href="#s5">Diagrama de Ligações (Wiring)</a></li>
+      <li><a href="#s6">Código Completo do ESP8266 (Firmware)</a></li>
+      <li><a href="#s7">Tópicos MQTT Utilizados</a></li>
+      <li><a href="#s8-cancela">Cancela MG90S — Lógica e Manutenção</a></li>
+      <li><a href="#s9">Dashboard Web — Código Completo</a></li>
+      <li><a href="#s10">Como Testar o Projeto</a></li>
+      <li><a href="#s11">Solução de Problemas</a></li>
+    </ol>
+  </div>
+
+  <!-- ── SEÇÃO 1 ── -->
+  <div class="section" id="s1">
+    <div class="section-header">
+      <div class="section-num">01</div>
+      <h2 class="section-title">Visão Geral do Sistema</h2>
+    </div>
+
+    <p>O <strong>Smart Parking IoT</strong> monitora 2 vagas de estacionamento com sensores infravermelhos (FC-51). Cada vaga possui um LED verde (livre) e um LED vermelho (ocupado). O ESP8266 publica o estado das vagas via MQTT, controla uma <strong>cancela MG90S</strong> e o dashboard web exibe tudo em tempo real com botão de manutenção.</p>
+
+    <div class="info-box orange" style="margin-top:20px">
+      <strong>🚧 NOVO — Cancela MG90S:</strong><br>
+      A cancela abre automaticamente quando há vagas disponíveis e fecha quando as <strong>duas vagas estiverem ocupadas</strong>. O modo manutenção permite controle manual via dashboard, desativando a lógica automática.
+    </div>
+
+    <div class="info-box tip" style="margin-top:12px">
+      <strong>Fluxo resumido:</strong><br>
+      Sensor IR detecta veículo → ESP8266 lê pino → Acende LED correto → Avalia vagas → Move cancela → Publica status via MQTT → Dashboard atualiza em tempo real
+    </div>
+
+    <h3 style="margin:24px 0 12px; font-size:1rem; color:var(--accent2);">Arquitetura em 3 camadas</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">🔌</div>
+        <div class="step-body"><strong>Camada de Percepção (Hardware)</strong><br>
+        2× Sensor IR FC-51, 2× LED Verde, 2× LED Vermelho, resistores, <strong>1× Servo MG90S (cancela)</strong>, ESP8266, protoboard e jumpers.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">📡</div>
+        <div class="step-body"><strong>Camada de Comunicação (MQTT/Wi-Fi)</strong><br>
+        ESP8266 conecta ao Wi-Fi e publica nos tópicos de vagas, total livre e <strong>status/comando da cancela</strong> no broker HiveMQ público.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">🖥️</div>
+        <div class="step-body"><strong>Camada de Aplicação (Dashboard)</strong><br>
+        Página HTML com JavaScript assina os tópicos MQTT via WebSocket, exibe o mapa de vagas, <strong>status da cancela e botão de manutenção</strong> em tempo real.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SEÇÃO 2 ── -->
+  <div class="section" id="s2">
+    <div class="section-header">
+      <div class="section-num">02</div>
+      <h2 class="section-title">Lista de Componentes e Materiais</h2>
+    </div>
+
+    <div class="component-grid">
+      <div class="comp-card">
+        <div class="comp-icon">🧠</div>
+        <div class="comp-name">ESP8266 Dev Board</div>
+        <div class="comp-qty">QTD: 1</div>
+        <div class="comp-desc">Microcontrolador com Wi-Fi integrado. Cérebro do projeto.</div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-icon">👁️</div>
+        <div class="comp-name">Sensor IR FC-51</div>
+        <div class="comp-qty">QTD: 2</div>
+        <div class="comp-desc">Detecta presença de objeto/veículo em cada vaga.</div>
+      </div>
+      <div class="comp-card highlight">
+        <div class="comp-icon">⚙️</div>
+        <div class="comp-name">Servo MG90S</div>
+        <div class="comp-qty">QTD: 1 — NOVO</div>
+        <div class="comp-desc">Servo de metal para a cancela. Alimentação 5V, sinal PWM.</div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-icon">🟢</div>
+        <div class="comp-name">LED Verde 5mm</div>
+        <div class="comp-qty">QTD: 2</div>
+        <div class="comp-desc">Indica vaga LIVRE.</div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-icon">🔴</div>
+        <div class="comp-name">LED Vermelho 5mm</div>
+        <div class="comp-qty">QTD: 2</div>
+        <div class="comp-desc">Indica vaga OCUPADA.</div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-icon">⚡</div>
+        <div class="comp-name">Resistor 220Ω</div>
+        <div class="comp-qty">QTD: 4</div>
+        <div class="comp-desc">Proteção dos LEDs (um por LED).</div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-icon">🔲</div>
+        <div class="comp-name">Protoboard 400pts</div>
+        <div class="comp-qty">QTD: 1</div>
+        <div class="comp-desc">Montagem do circuito sem solda.</div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-icon">🔗</div>
+        <div class="comp-name">Jumpers M-M / M-F</div>
+        <div class="comp-qty">QTD: 1 kit</div>
+        <div class="comp-desc">Conexões entre ESP8266, protoboard e sensores.</div>
+      </div>
+    </div>
+
+    <div class="info-box orange">
+      <strong>⚙️ Sobre o MG90S:</strong> O cabo marrom vai ao GND, o vermelho ao 5V (use o pino VIN ou 5V da placa), e o laranja/amarelo ao pino de sinal GPIO. O MG90S consome até 700mA no torque máximo — recomenda-se alimentação separada (powerbank ou fonte 5V) em vez de usar o 3.3V do ESP8266.
+    </div>
+
+    <h3 style="margin:28px 0 12px; font-size:1rem; color:var(--accent2);">Estimativa de Custo (2 vagas + cancela)</h3>
+    <table>
+      <thead>
+        <tr><th>Componente</th><th>Qtd</th><th>Unit (R$)</th><th>Total (R$)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>ESP8266 Dev Board</td><td>1</td><td>25,00</td><td>25,00</td></tr>
+        <tr><td>Servo MG90S</td><td>1</td><td>18,00</td><td>18,00</td></tr>
+        <tr><td>Sensor IR FC-51</td><td>2</td><td>6,00</td><td>12,00</td></tr>
+        <tr><td>LED Verde 5mm</td><td>2</td><td>0,30</td><td>0,60</td></tr>
+        <tr><td>LED Vermelho 5mm</td><td>2</td><td>0,30</td><td>0,60</td></tr>
+        <tr><td>Resistor 220Ω</td><td>4</td><td>0,10</td><td>0,40</td></tr>
+        <tr><td>Protoboard 400pts</td><td>1</td><td>10,00</td><td>10,00</td></tr>
+        <tr><td>Jumpers (kit)</td><td>1</td><td>12,00</td><td>12,00</td></tr>
+        <tr><td>Cabo USB</td><td>1</td><td>10,00</td><td>10,00</td></tr>
+        <tr style="font-weight:700; color:#a78bfa"><td colspan="3">TOTAL ESTIMADO</td><td>R$ 88,60</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── SEÇÃO 3 ── -->
+  <div class="section" id="s3">
+    <div class="section-header">
+      <div class="section-num">03</div>
+      <h2 class="section-title">Configuração da Arduino IDE</h2>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong>Baixe e instale a Arduino IDE 2.x</strong><br>
+          Acesse <code>https://www.arduino.cc/en/software</code> e instale normalmente.
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong>Adicione suporte ao ESP8266</strong><br>
+          Em <strong>Arquivo → Preferências</strong>, cole no campo de URLs adicionais:
+          <div class="code-wrap" style="margin-top:10px">
+            <pre style="border-radius:4px">https://arduino.esp8266.com/stable/package_esp8266com_index.json</pre>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong>Instale o pacote ESP8266</strong><br>
+          Vá em <strong>Ferramentas → Placa → Gerenciador de Placas</strong>. Pesquise <strong>"esp8266"</strong> e instale o pacote <strong>"esp8266 by ESP8266 Community"</strong>.
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <strong>Selecione a placa correta</strong><br>
+          Vá em <strong>Ferramentas → Placa → esp8266 → NodeMCU 1.0 (ESP-12E Module)</strong>.<br>
+          Depois selecione a <strong>Porta COM</strong> correspondente.
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box warn">
+      <strong>Windows:</strong> Se a porta COM não aparecer, instale o driver CH340 ou CP2102 conforme o chip USB do seu ESP8266.
+    </div>
+  </div>
+
+  <!-- ── SEÇÃO 4 ── -->
+  <div class="section" id="s4">
+    <div class="section-header">
+      <div class="section-num">04</div>
+      <h2 class="section-title">Instalação das Bibliotecas</h2>
+    </div>
+
+    <h3 style="margin:0 0 12px; font-size:1rem; color:var(--accent2);">Bibliotecas necessárias</h3>
+    <table>
+      <thead>
+        <tr><th>Biblioteca</th><th>Finalidade</th><th>Como Instalar</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>ESP8266WiFi.h</code></td><td>Conexão Wi-Fi</td><td>Incluída no pacote ESP8266</td></tr>
+        <tr><td><code>PubSubClient.h</code></td><td>Comunicação MQTT</td><td>Gerenciador de Bibliotecas → "PubSubClient" by Nick O'Leary</td></tr>
+        <tr><td><code>Servo.h</code></td><td>Controle do Servo MG90S</td><td>Incluída no pacote ESP8266</td></tr>
+      </tbody>
+    </table>
+
+    <div class="info-box orange">
+      <strong>⚙️ Servo.h no ESP8266:</strong> A biblioteca <code>Servo.h</code> já vem incluída no pacote ESP8266 e funciona com PWM nos pinos D1–D8. Não é necessário instalar nada extra para o servo.
+    </div>
+
+    <div class="info-box tip">
+      <strong>PubSubClient:</strong> Instale via <strong>Sketch → Incluir Biblioteca → Gerenciar Bibliotecas</strong>, pesquise "PubSubClient" e instale a versão de Nick O'Leary (v2.8+).
+    </div>
+  </div>
+
+  <!-- ── SEÇÃO 5 ── -->
+  <div class="section" id="s5">
+    <div class="section-header">
+      <div class="section-num">05</div>
+      <h2 class="section-title">Diagrama de Ligações (Wiring)</h2>
+    </div>
+
+    <div class="info-box warn">
+      <strong>Atenção:</strong> O ESP8266 trabalha com 3.3V nos GPIOs. Os sensores FC-51 e LEDs são compatíveis. <strong>O servo MG90S deve ser alimentado com 5V (pino VIN ou fonte externa)</strong> — nunca use 3.3V para o servo.
+    </div>
+
+    <h3 style="margin:20px 0 12px; font-size:1rem; color:var(--accent2);">Mapeamento de Pinos</h3>
+    <table>
+      <thead>
+        <tr><th>Componente</th><th>Pino do Componente</th><th>Pino ESP8266</th><th>Observação</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Sensor IR Vaga 1 (FC-51)</td><td>VCC</td><td><span class="pin power">3.3V</span></td><td>—</td></tr>
+        <tr><td>Sensor IR Vaga 1 (FC-51)</td><td>GND</td><td><span class="pin gnd">GND</span></td><td>—</td></tr>
+        <tr><td>Sensor IR Vaga 1 (FC-51)</td><td>OUT (D0)</td><td><span class="pin gpio">D3 / GPIO0</span></td><td>Leitura digital</td></tr>
+        <tr><td>Sensor IR Vaga 2 (FC-51)</td><td>VCC</td><td><span class="pin power">3.3V</span></td><td>—</td></tr>
+        <tr><td>Sensor IR Vaga 2 (FC-51)</td><td>GND</td><td><span class="pin gnd">GND</span></td><td>—</td></tr>
+        <tr><td>Sensor IR Vaga 2 (FC-51)</td><td>OUT (D0)</td><td><span class="pin gpio">D4 / GPIO2</span></td><td>Leitura digital</td></tr>
+        <tr><td>LED Verde (Vaga 1)</td><td>Anodo (+)</td><td><span class="pin gpio">D5 / GPIO14</span></td><td>Série com 220Ω</td></tr>
+        <tr><td>LED Verde (Vaga 1)</td><td>Catodo (−)</td><td><span class="pin gnd">GND</span></td><td>—</td></tr>
+        <tr><td>LED Vermelho (Vaga 1)</td><td>Anodo (+)</td><td><span class="pin gpio">D6 / GPIO12</span></td><td>Série com 220Ω</td></tr>
+        <tr><td>LED Vermelho (Vaga 1)</td><td>Catodo (−)</td><td><span class="pin gnd">GND</span></td><td>—</td></tr>
+        <tr><td>LED Verde (Vaga 2)</td><td>Anodo (+)</td><td><span class="pin gpio">D7 / GPIO13</span></td><td>Série com 220Ω</td></tr>
+        <tr><td>LED Verde (Vaga 2)</td><td>Catodo (−)</td><td><span class="pin gnd">GND</span></td><td>—</td></tr>
+        <tr><td>LED Vermelho (Vaga 2)</td><td>Anodo (+)</td><td><span class="pin gpio">D8 / GPIO15</span></td><td>Série com 220Ω</td></tr>
+        <tr><td>LED Vermelho (Vaga 2)</td><td>Catodo (−)</td><td><span class="pin gnd">GND</span></td><td>—</td></tr>
+        <tr style="background:rgba(249,115,22,0.05)"><td><strong>Servo MG90S (Cancela)</strong></td><td>Fio Marrom (GND)</td><td><span class="pin gnd">GND</span></td><td>Terra do servo</td></tr>
+        <tr style="background:rgba(249,115,22,0.05)"><td><strong>Servo MG90S (Cancela)</strong></td><td>Fio Vermelho (VCC)</td><td><span class="pin power">5V / VIN</span></td><td>⚠️ Use 5V — não 3.3V</td></tr>
+        <tr style="background:rgba(249,115,22,0.05)"><td><strong>Servo MG90S (Cancela)</strong></td><td>Fio Laranja (Sinal)</td><td><span class="pin orange">D2 / GPIO4</span></td><td>PWM de controle</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin:28px 0 12px; font-size:1rem; color:var(--accent2);">Diagrama ASCII das Ligações</h3>
+    <div class="wiring-diagram">
+      <pre>
+╔══════════════════════════════════════════════════════════════════════╗
+║                     ESP8266 (NodeMCU)                                ║
+║                                                                      ║
+║  3.3V ──┬───────────────── VCC  [Sensor IR Vaga 1 FC-51]            ║
+║         └───────────────── VCC  [Sensor IR Vaga 2 FC-51]            ║
+║                                                                      ║
+║  5V/VIN ────────────────── VCC  [Servo MG90S — Fio Vermelho] ⚠️ 5V  ║
+║                                                                      ║
+║  GND  ──┬───────────────── GND  [Sensor IR Vaga 1]                  ║
+║         ├───────────────── GND  [Sensor IR Vaga 2]                  ║
+║         ├───────────────── GND  [LED Verde Vaga 1]                  ║
+║         ├───────────────── GND  [LED Vermelho Vaga 1]               ║
+║         ├───────────────── GND  [LED Verde Vaga 2]                  ║
+║         ├───────────────── GND  [LED Vermelho Vaga 2]               ║
+║         └───────────────── GND  [Servo MG90S — Fio Marrom]          ║
+║                                                                      ║
+║  D3/GPIO0 ──────────────── OUT  [Sensor IR Vaga 1]  ◄─ (leitura)   ║
+║  D4/GPIO2 ──────────────── OUT  [Sensor IR Vaga 2]  ◄─ (leitura)   ║
+║                                                                      ║
+║  D5/GPIO14 ──[220Ω]────── Anodo [LED Verde   Vaga 1]  ──► verde     ║
+║  D6/GPIO12 ──[220Ω]────── Anodo [LED Vermelho Vaga 1] ──► vermelho  ║
+║  D7/GPIO13 ──[220Ω]────── Anodo [LED Verde   Vaga 2]  ──► verde     ║
+║  D8/GPIO15 ──[220Ω]────── Anodo [LED Vermelho Vaga 2] ──► vermelho  ║
+║                                                                      ║
+║  D2/GPIO4 ──────────────── SIN  [Servo MG90S — Fio Laranja] ──► ⚙️ ║
+║                                                                      ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+  SERVO MG90S — CANCELA
+  ┌──────────────────────┐
+  │  MARROM  → GND       │   0°  = FECHADA (vagas cheias)
+  │  VERMELHO → 5V/VIN   │   90° = ABERTA  (vagas disponíveis)
+  │  LARANJA  → D2/GPIO4 │
+  └──────────────────────┘
+       ↕ braço da cancela
+</pre>
+    </div>
+  </div>
+
+  <!-- ── SEÇÃO 6 ── -->
+  <div class="section" id="s6">
+    <div class="section-header">
+      <div class="section-num">06</div>
+      <h2 class="section-title">Código Completo do ESP8266 (Firmware)</h2>
+    </div>
+
+    <div class="info-box warn">
+      <strong>Altere obrigatoriamente:</strong> As linhas <code>WIFI_SSID</code> e <code>WIFI_PASSWORD</code> com o nome e senha da sua rede Wi-Fi (somente 2.4GHz).
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-label orange">FIRMWARE · smart_parking_cancela_MG90.ino</div>
+      <pre><span class="cm">/*
+  ============================================================
+  SENAI IoT – Grupo 5
+  Smart Parking IoT – 2 Vagas + Cancela MG90S
+  ESP8266 + Sensores IR FC-51 + LEDs + Servo MG90S via MQTT
+  Cancela ABERTA quando há vaga, FECHADA quando tudo ocupado
+  Modo manutenção via MQTT para controle manual
+  ============================================================
+*/</span>
+
+<span class="pp">#include</span> <span class="str">&lt;ESP8266WiFi.h&gt;</span>
+<span class="pp">#include</span> <span class="str">&lt;PubSubClient.h&gt;</span>
+<span class="pp">#include</span> <span class="str">&lt;Servo.h&gt;</span>
+
+<span class="cm">// ── Wi-Fi ────────────────────────────────────────────────</span>
+<span class="kw">const char</span>* <span class="var">WIFI_SSID</span>     = <span class="str">"SEU_WIFI_AQUI"</span>;   <span class="cm">// ← ALTERE</span>
+<span class="kw">const char</span>* <span class="var">WIFI_PASSWORD</span> = <span class="str">"SUA_SENHA_AQUI"</span>;  <span class="cm">// ← ALTERE</span>
+
+<span class="cm">// ── MQTT ─────────────────────────────────────────────────</span>
+<span class="kw">const char</span>* <span class="var">MQTT_BROKER</span>   = <span class="str">"broker.hivemq.com"</span>;
+<span class="kw">const int</span>   <span class="var">MQTT_PORT</span>     = <span class="num">1883</span>;
+<span class="kw">const char</span>* <span class="var">CLIENT_ID</span>     = <span class="str">"senai_grupo5_parking_esp8266"</span>;
+
+<span class="cm">// ── Tópicos MQTT ─────────────────────────────────────────</span>
+<span class="kw">const char</span>* <span class="var">TOPIC_VAGA1</span>          = <span class="str">"senai/g93611/grupo5/parking/vaga1"</span>;
+<span class="kw">const char</span>* <span class="var">TOPIC_VAGA2</span>          = <span class="str">"senai/g93611/grupo5/parking/vaga2"</span>;
+<span class="kw">const char</span>* <span class="var">TOPIC_TOTAL</span>          = <span class="str">"senai/g93611/grupo5/parking/total_livre"</span>;
+<span class="kw">const char</span>* <span class="var">TOPIC_CANCELA_STATUS</span> = <span class="str">"senai/g93611/grupo5/parking/cancela/status"</span>;
+<span class="kw">const char</span>* <span class="var">TOPIC_CANCELA_CMD</span>    = <span class="str">"senai/g93611/grupo5/parking/cancela/cmd"</span>;
+
+<span class="cm">// ── Pinos dos Sensores IR ─────────────────────────────────</span>
+<span class="pp">#define</span> <span class="var">SENSOR_VAGA1</span>   D3
+<span class="pp">#define</span> <span class="var">SENSOR_VAGA2</span>   D4
+
+<span class="cm">// ── Pinos dos LEDs ────────────────────────────────────────</span>
+<span class="pp">#define</span> <span class="var">LED_VERDE_V1</span>   D5
+<span class="pp">#define</span> <span class="var">LED_VERM_V1</span>    D6
+<span class="pp">#define</span> <span class="var">LED_VERDE_V2</span>   D7
+<span class="pp">#define</span> <span class="var">LED_VERM_V2</span>    D8
+
+<span class="cm">// ── Pino do Servo (Cancela MG90S) ────────────────────────</span>
+<span class="pp">#define</span> <span class="var">SERVO_CANCELA</span>  D2
+
+<span class="cm">// ── Ângulos da Cancela ────────────────────────────────────</span>
+<span class="pp">#define</span> <span class="var">ANGULO_ABERTA</span>   <span class="num">90</span>  <span class="cm">// Cancela levantada</span>
+<span class="pp">#define</span> <span class="var">ANGULO_FECHADA</span>   <span class="num">0</span>  <span class="cm">// Cancela abaixada</span>
+
+<span class="kw">const long</span> <span class="var">INTERVAL</span> = <span class="num">3000</span>;
+
+<span class="cm">// ── Variáveis de controle ─────────────────────────────────</span>
+<span class="kw">bool</span> <span class="var">estadoAnteriorV1</span>   = <span class="kw">true</span>;
+<span class="kw">bool</span> <span class="var">estadoAnteriorV2</span>   = <span class="kw">true</span>;
+<span class="kw">bool</span> <span class="var">cancelaAbertaAtual</span> = <span class="kw">true</span>;
+<span class="kw">bool</span> <span class="var">modoManutencao</span>     = <span class="kw">false</span>;
+<span class="kw">unsigned long</span> <span class="var">lastPublish</span> = <span class="num">0</span>;
+
+<span class="var">Servo</span> <span class="var">servoCancela</span>;
+<span class="var">WiFiClient</span> <span class="var">espClient</span>;
+<span class="var">PubSubClient</span> <span class="var">mqtt</span>(<span class="var">espClient</span>);
+
+<span class="cm">// ── Mover Cancela ─────────────────────────────────────────</span>
+<span class="kw">void</span> <span class="fn">moverCancela</span>(<span class="kw">bool</span> <span class="var">abrir</span>) {
+  <span class="var">servoCancela</span>.<span class="fn">write</span>(<span class="var">abrir</span> ? <span class="var">ANGULO_ABERTA</span> : <span class="var">ANGULO_FECHADA</span>);
+  <span class="var">cancelaAbertaAtual</span> = <span class="var">abrir</span>;
+  <span class="fn">delay</span>(<span class="num">500</span>);
+  <span class="var">mqtt</span>.<span class="fn">publish</span>(<span class="var">TOPIC_CANCELA_STATUS</span>,
+               <span class="var">abrir</span> ? <span class="str">"ABERTA"</span> : <span class="str">"FECHADA"</span>, <span class="kw">true</span>);
+}
+
+<span class="cm">// ── Callback MQTT (comandos de manutenção) ────────────────</span>
+<span class="kw">void</span> <span class="fn">mqttCallback</span>(<span class="kw">char</span>* <span class="var">topic</span>, <span class="kw">byte</span>* <span class="var">payload</span>, <span class="kw">unsigned int</span> <span class="var">length</span>) {
+  <span class="var">String</span> <span class="var">msg</span> = <span class="str">""</span>;
+  <span class="kw">for</span> (<span class="kw">unsigned int</span> <span class="var">i</span> = <span class="num">0</span>; <span class="var">i</span> &lt; <span class="var">length</span>; <span class="var">i</span>++) <span class="var">msg</span> += (<span class="kw">char</span>)<span class="var">payload</span>[<span class="var">i</span>];
+  <span class="var">msg</span>.<span class="fn">toUpperCase</span>();
+  <span class="var">msg</span>.<span class="fn">trim</span>();
+
+  <span class="kw">if</span> (<span class="var">String</span>(<span class="var">topic</span>) == <span class="var">TOPIC_CANCELA_CMD</span>) {
+    <span class="kw">if</span> (<span class="var">msg</span> == <span class="str">"ABRIR"</span>) {
+      <span class="var">modoManutencao</span> = <span class="kw">true</span>;
+      <span class="fn">moverCancela</span>(<span class="kw">true</span>);
+      <span class="var">mqtt</span>.<span class="fn">publish</span>(<span class="var">TOPIC_CANCELA_STATUS</span>, <span class="str">"ABERTA (MANUTENCAO)"</span>, <span class="kw">true</span>);
+    }
+    <span class="kw">else if</span> (<span class="var">msg</span> == <span class="str">"FECHAR"</span>) {
+      <span class="var">modoManutencao</span> = <span class="kw">true</span>;
+      <span class="fn">moverCancela</span>(<span class="kw">false</span>);
+      <span class="var">mqtt</span>.<span class="fn">publish</span>(<span class="var">TOPIC_CANCELA_STATUS</span>, <span class="str">"FECHADA (MANUTENCAO)"</span>, <span class="kw">true</span>);
+    }
+    <span class="kw">else if</span> (<span class="var">msg</span> == <span class="str">"AUTO"</span>) {
+      <span class="var">modoManutencao</span> = <span class="kw">false</span>;
+      <span class="var">mqtt</span>.<span class="fn">publish</span>(<span class="var">TOPIC_CANCELA_STATUS</span>, <span class="str">"MODO AUTOMATICO"</span>, <span class="kw">true</span>);
+    }
+  }
+}
+
+<span class="kw">void</span> <span class="fn">connectWiFi</span>() {
+  <span class="var">Serial</span>.<span class="fn">println</span>(<span class="var">F</span>(<span class="str">"\n[WiFi] Iniciando conexão..."</span>));
+  <span class="var">WiFi</span>.<span class="fn">mode</span>(<span class="var">WIFI_STA</span>);
+  <span class="var">WiFi</span>.<span class="fn">begin</span>(<span class="var">WIFI_SSID</span>, <span class="var">WIFI_PASSWORD</span>);
+  <span class="kw">int</span> <span class="var">t</span> = <span class="num">0</span>;
+  <span class="kw">while</span> (<span class="var">WiFi</span>.<span class="fn">status</span>() != <span class="var">WL_CONNECTED</span>) {
+    <span class="fn">delay</span>(<span class="num">500</span>); <span class="var">Serial</span>.<span class="fn">print</span>(<span class="str">'.'</span>);
+    <span class="kw">if</span> (++<span class="var">t</span> >= <span class="num">30</span>) <span class="var">ESP</span>.<span class="fn">restart</span>();
+  }
+  <span class="var">Serial</span>.<span class="fn">println</span>(<span class="var">WiFi</span>.<span class="fn">localIP</span>());
+}
+
+<span class="kw">void</span> <span class="fn">connectMQTT</span>() {
+  <span class="kw">while</span> (!<span class="var">mqtt</span>.<span class="fn">connected</span>()) {
+    <span class="kw">if</span> (<span class="var">mqtt</span>.<span class="fn">connect</span>(<span class="var">CLIENT_ID</span>)) {
+      <span class="var">mqtt</span>.<span class="fn">subscribe</span>(<span class="var">TOPIC_CANCELA_CMD</span>);
+      <span class="var">Serial</span>.<span class="fn">println</span>(<span class="var">F</span>(<span class="str">"[MQTT] OK — inscrito em cancela/cmd"</span>));
+    } <span class="kw">else</span> { <span class="fn">delay</span>(<span class="num">5000</span>); }
+  }
+}
+
+<span class="kw">void</span> <span class="fn">atualizarLEDs</span>(<span class="kw">int</span> <span class="var">pv</span>, <span class="kw">int</span> <span class="var">pr</span>, <span class="kw">bool</span> <span class="var">livre</span>) {
+  <span class="fn">digitalWrite</span>(<span class="var">pv</span>, <span class="var">livre</span> ? <span class="var">HIGH</span> : <span class="var">LOW</span>);
+  <span class="fn">digitalWrite</span>(<span class="var">pr</span>, <span class="var">livre</span> ? <span class="var">LOW</span>  : <span class="var">HIGH</span>);
+}
+
+<span class="kw">void</span> <span class="fn">publicarStatus</span>(<span class="kw">const char</span>* <span class="var">topico</span>, <span class="kw">bool</span> <span class="var">livre</span>, <span class="kw">int</span> <span class="var">n</span>) {
+  <span class="var">String</span> <span class="var">p</span> = <span class="str">"{\\"vaga\\":\\"</span> + <span class="var">String</span>(<span class="var">n</span>) + <span class="str">",\\"status\\":\\"</span>;
+  <span class="var">p</span> += <span class="var">livre</span> ? <span class="str">"LIVRE"</span> : <span class="str">"OCUPADO"</span>;
+  <span class="var">p</span> += <span class="str">",\\"livre\\":\\"</span> + <span class="var">String</span>(<span class="var">livre</span> ? <span class="str">"true"</span> : <span class="str">"false"</span>) + <span class="str">"}"</span>;
+  <span class="var">mqtt</span>.<span class="fn">publish</span>(<span class="var">topico</span>, <span class="var">p</span>.<span class="fn">c_str</span>());
+}
+
+<span class="kw">void</span> <span class="fn">setup</span>() {
+  <span class="var">Serial</span>.<span class="fn">begin</span>(<span class="num">115200</span>);
+  <span class="fn">pinMode</span>(<span class="var">SENSOR_VAGA1</span>, <span class="var">INPUT</span>);
+  <span class="fn">pinMode</span>(<span class="var">SENSOR_VAGA2</span>, <span class="var">INPUT</span>);
+  <span class="fn">pinMode</span>(<span class="var">LED_VERDE_V1</span>, <span class="var">OUTPUT</span>); <span class="fn">pinMode</span>(<span class="var">LED_VERM_V1</span>, <span class="var">OUTPUT</span>);
+  <span class="fn">pinMode</span>(<span class="var">LED_VERDE_V2</span>, <span class="var">OUTPUT</span>); <span class="fn">pinMode</span>(<span class="var">LED_VERM_V2</span>, <span class="var">OUTPUT</span>);
+
+  <span class="var">servoCancela</span>.<span class="fn">attach</span>(<span class="var">SERVO_CANCELA</span>);
+  <span class="fn">moverCancela</span>(<span class="kw">true</span>);  <span class="cm">// Inicia ABERTA</span>
+
+  <span class="fn">atualizarLEDs</span>(<span class="var">LED_VERDE_V1</span>, <span class="var">LED_VERM_V1</span>, <span class="kw">true</span>);
+  <span class="fn">atualizarLEDs</span>(<span class="var">LED_VERDE_V2</span>, <span class="var">LED_VERM_V2</span>, <span class="kw">true</span>);
+
+  <span class="fn">connectWiFi</span>();
+  <span class="var">mqtt</span>.<span class="fn">setServer</span>(<span class="var">MQTT_BROKER</span>, <span class="var">MQTT_PORT</span>);
+  <span class="var">mqtt</span>.<span class="fn">setCallback</span>(<span class="var">mqttCallback</span>);
+}
+
+<span class="kw">void</span> <span class="fn">loop</span>() {
+  <span class="kw">if</span> (<span class="var">WiFi</span>.<span class="fn">status</span>() != <span class="var">WL_CONNECTED</span>) <span class="fn">connectWiFi</span>();
+  <span class="kw">if</span> (!<span class="var">mqtt</span>.<span class="fn">connected</span>()) <span class="fn">connectMQTT</span>();
+  <span class="var">mqtt</span>.<span class="fn">loop</span>();
+
+  <span class="kw">bool</span> <span class="var">v1Livre</span> = (<span class="fn">digitalRead</span>(<span class="var">SENSOR_VAGA1</span>) == <span class="var">HIGH</span>);
+  <span class="kw">bool</span> <span class="var">v2Livre</span> = (<span class="fn">digitalRead</span>(<span class="var">SENSOR_VAGA2</span>) == <span class="var">HIGH</span>);
+
+  <span class="kw">if</span> (<span class="var">v1Livre</span> != <span class="var">estadoAnteriorV1</span>) {
+    <span class="fn">atualizarLEDs</span>(<span class="var">LED_VERDE_V1</span>, <span class="var">LED_VERM_V1</span>, <span class="var">v1Livre</span>);
+    <span class="var">estadoAnteriorV1</span> = <span class="var">v1Livre</span>;
+  }
+  <span class="kw">if</span> (<span class="var">v2Livre</span> != <span class="var">estadoAnteriorV2</span>) {
+    <span class="fn">atualizarLEDs</span>(<span class="var">LED_VERDE_V2</span>, <span class="var">LED_VERM_V2</span>, <span class="var">v2Livre</span>);
+    <span class="var">estadoAnteriorV2</span> = <span class="var">v2Livre</span>;
+  }
+
+  <span class="cm">// ── Lógica automática da cancela ─────────────────────────</span>
+  <span class="kw">if</span> (!<span class="var">modoManutencao</span>) {
+    <span class="kw">bool</span> <span class="var">deveAbrir</span> = (<span class="var">v1Livre</span> || <span class="var">v2Livre</span>);
+    <span class="kw">if</span> (<span class="var">deveAbrir</span> != <span class="var">cancelaAbertaAtual</span>) <span class="fn">moverCancela</span>(<span class="var">deveAbrir</span>);
+  }
+
+  <span class="kw">unsigned long</span> <span class="var">now</span> = <span class="fn">millis</span>();
+  <span class="kw">if</span> (<span class="var">now</span> - <span class="var">lastPublish</span> >= <span class="var">INTERVAL</span>) {
+    <span class="var">lastPublish</span> = <span class="var">now</span>;
+    <span class="fn">publicarStatus</span>(<span class="var">TOPIC_VAGA1</span>, <span class="var">v1Livre</span>, <span class="num">1</span>);
+    <span class="fn">publicarStatus</span>(<span class="var">TOPIC_VAGA2</span>, <span class="var">v2Livre</span>, <span class="num">2</span>);
+    <span class="kw">int</span> <span class="var">total</span> = (<span class="kw">int</span>)<span class="var">v1Livre</span> + (<span class="kw">int</span>)<span class="var">v2Livre</span>;
+    <span class="var">mqtt</span>.<span class="fn">publish</span>(<span class="var">TOPIC_TOTAL</span>, <span class="var">String</span>(<span class="var">total</span>).<span class="fn">c_str</span>());
+
+    <span class="var">String</span> <span class="var">sc</span> = <span class="var">modoManutencao</span>
+      ? (<span class="var">cancelaAbertaAtual</span> ? <span class="str">"ABERTA (MANUTENCAO)"</span> : <span class="str">"FECHADA (MANUTENCAO)"</span>)
+      : (<span class="var">cancelaAbertaAtual</span> ? <span class="str">"ABERTA"</span> : <span class="str">"FECHADA"</span>);
+    <span class="var">mqtt</span>.<span class="fn">publish</span>(<span class="var">TOPIC_CANCELA_STATUS</span>, <span class="var">sc</span>.<span class="fn">c_str</span>(), <span class="kw">true</span>);
+  }
+}</pre>
+    </div>
+  </div>
+
+  <!-- ── SEÇÃO 7 ── -->
+  <div class="section" id="s7">
+    <div class="section-header">
+      <div class="section-num">07</div>
+      <h2 class="section-title">Tópicos MQTT Utilizados</h2>
+    </div>
+
+    <table>
+      <thead>
+        <tr><th>Tópico</th><th>Tipo</th><th>Payload Exemplo</th><th>Descrição</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>…/parking/vaga1</code></td><td>Publish</td><td><code>{"vaga":1,"status":"LIVRE","livre":true}</code></td><td>Status da vaga 1</td></tr>
+        <tr><td><code>…/parking/vaga2</code></td><td>Publish</td><td><code>{"vaga":2,"status":"OCUPADO","livre":false}</code></td><td>Status da vaga 2</td></tr>
+        <tr><td><code>…/parking/total_livre</code></td><td>Publish</td><td><code>1</code></td><td>Total de vagas livres (0, 1 ou 2)</td></tr>
+        <tr style="background:rgba(249,115,22,0.05)"><td><code>…/parking/cancela/status</code></td><td>Publish</td><td><code>ABERTA</code> / <code>FECHADA</code> / <code>ABERTA (MANUTENCAO)</code></td><td>⚙️ Status atual da cancela (retained)</td></tr>
+        <tr style="background:rgba(249,115,22,0.05)"><td><code>…/parking/cancela/cmd</code></td><td>Subscribe</td><td><code>ABRIR</code> / <code>FECHAR</code> / <code>AUTO</code></td><td>⚙️ Comando de manutenção da cancela</td></tr>
+      </tbody>
+    </table>
+
+    <div class="info-box orange">
+      <strong>Comandos de manutenção:</strong><br>
+      Publique <code>ABRIR</code> → abre a cancela e desativa o automático<br>
+      Publique <code>FECHAR</code> → fecha a cancela e desativa o automático<br>
+      Publique <code>AUTO</code> → reativa o controle automático pelos sensores
+    </div>
+  </div>
+
+  <!-- ── SEÇÃO 8 — CANCELA ── -->
+  <div class="section" id="s8-cancela">
+    <div class="section-header">
+      <div class="section-num orange">08</div>
+      <h2 class="section-title">Cancela MG90S — Lógica e Manutenção</h2>
+    </div>
+
+    <h3 style="margin:0 0 16px; font-size:1rem; color:var(--orange);">Lógica Automática</h3>
+    <table>
+      <thead>
+        <tr><th>Vaga 1</th><th>Vaga 2</th><th>Estado da Cancela</th><th>Ação</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>LIVRE</td><td>LIVRE</td><td style="color:var(--green)"><strong>ABERTA (90°)</strong></td><td>Ambas livres → entrada permitida</td></tr>
+        <tr><td>OCUPADO</td><td>LIVRE</td><td style="color:var(--green)"><strong>ABERTA (90°)</strong></td><td>Ainda há 1 vaga → entrada permitida</td></tr>
+        <tr><td>LIVRE</td><td>OCUPADO</td><td style="color:var(--green)"><strong>ABERTA (90°)</strong></td><td>Ainda há 1 vaga → entrada permitida</td></tr>
+        <tr><td>OCUPADO</td><td>OCUPADO</td><td style="color:var(--red)"><strong>FECHADA (0°)</strong></td><td>Estacionamento lotado → bloqueio</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin:24px 0 16px; font-size:1rem; color:var(--orange);">Modo Manutenção</h3>
+    <p style="margin-bottom:14px">O modo manutenção desativa a lógica automática e permite abrir ou fechar a cancela manualmente pelo dashboard. Útil para testes, manutenção ou situações de emergência.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num orange">🔧</div>
+        <div class="step-body">
+          <strong class="orange">Ativar modo manutenção + Abrir</strong><br>
+          Clique no botão <strong>"🔧 ABRIR CANCELA"</strong> no dashboard. O firmware recebe <code>ABRIR</code>, move o servo para 90° e ativa o modo manutenção. O status no dashboard muda para <em>"ABERTA (MANUTENÇÃO)"</em>.
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num orange">🔒</div>
+        <div class="step-body">
+          <strong class="orange">Ativar modo manutenção + Fechar</strong><br>
+          Clique no botão <strong>"🔒 FECHAR CANCELA"</strong> no dashboard. O firmware recebe <code>FECHAR</code>, move o servo para 0° e ativa o modo manutenção. O status muda para <em>"FECHADA (MANUTENÇÃO)"</em>.
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num orange">🤖</div>
+        <div class="step-body">
+          <strong class="orange">Voltar ao modo automático</strong><br>
+          Clique no botão <strong>"🤖 MODO AUTO"</strong> no dashboard. O firmware recebe <code>AUTO</code> e retoma o controle automático pelos sensores, abrindo ou fechando imediatamente conforme o estado das vagas.
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box tip" style="margin-top:16px">
+      <strong>Ajuste dos ângulos:</strong> Se o servo do seu projeto funcionar de forma invertida, troque os valores no firmware: <code>#define ANGULO_ABERTA 0</code> e <code>#define ANGULO_FECHADA 90</code>. Teste girando o braço do servo manualmente antes de fixar.
+    </div>
+  </div>
+
+  <!-- ── SEÇÃO 9 ── -->
+  <div class="section" id="s9">
+    <div class="section-header">
+      <div class="section-num">09</div>
+      <h2 class="section-title">Dashboard Web — Código Completo</h2>
+    </div>
+
+    <p>Salve o código abaixo como <strong><code>dashboard_parking.html</code></strong> e abra em qualquer navegador. Inclui o painel da cancela com status em tempo real e botões de manutenção.</p>
+
+    <div class="info-box ok">
+      <strong>Sem instalação necessária:</strong> Abra o .html no navegador. O painel de manutenção da cancela fica visível no topo — use os botões para controlar manualmente.
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-label">DASHBOARD · dashboard_parking.html</div>
+      <pre>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+&lt;meta charset="UTF-8"&gt;
+&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+&lt;title&gt;Smart Parking IoT – 2 Vagas + Cancela&lt;/title&gt;
+&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/mqtt/5.0.3/mqtt.min.js"&gt;&lt;/script&gt;
+&lt;style&gt;
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #0a0a0f; color: #e2e8f0;
+  font-family: 'Segoe UI', sans-serif;
+  min-height: 100vh; display: flex; flex-direction: column;
+  align-items: center; padding: 24px 16px;
+}
+h1 { font-size: 1.8rem; margin-bottom: 4px; color: #7c3aed; }
+.sub { color: #64748b; font-size: 0.8rem; margin-bottom: 16px; }
+.status-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; font-size: 0.75rem; }
+.dot { width: 9px; height: 9px; border-radius: 50%; background: #64748b; }
+.dot.ok  { background: #22c55e; box-shadow: 0 0 8px #22c55e; animation: blink 2s infinite; }
+.dot.err { background: #ef4444; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.5} }
+#conn-txt { color: #64748b; }
+#conn-txt.ok  { color: #22c55e; }
+#conn-txt.err { color: #ef4444; }
+
+/* Cancela Panel */
+.cancela-panel {
+  background: #111118; border: 2px solid #1e1e2e; border-radius: 10px;
+  padding: 18px 22px; width: 100%; max-width: 500px; margin-bottom: 16px;
+}
+.cancela-panel.aberta  { border-color: #22c55e; }
+.cancela-panel.fechada { border-color: #ef4444; }
+.cancela-panel.manutencao { border-color: #f97316; }
+.cancela-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.cancela-title { font-size: 0.65rem; letter-spacing: 3px; color: #64748b; font-family: monospace; }
+.cancela-badge {
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 1px; padding: 3px 10px;
+  border-radius: 20px; font-family: monospace;
+}
+.cancela-badge.aberta   { background: rgba(34,197,94,0.15); color: #22c55e; border: 1px solid rgba(34,197,94,0.3); }
+.cancela-badge.fechada  { background: rgba(239,68,68,0.15);  color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
+.cancela-badge.manutencao { background: rgba(249,115,22,0.15); color: #f97316; border: 1px solid rgba(249,115,22,0.3); }
+.cancela-icon-row { text-align: center; font-size: 2.4rem; margin-bottom: 14px; }
+.cancela-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn-mnt {
+  flex: 1; min-width: 100px; padding: 10px 14px; border-radius: 6px;
+  border: none; cursor: pointer; font-weight: 700; font-size: 0.8rem;
+  font-family: 'Segoe UI', sans-serif; transition: all 0.2s;
+}
+.btn-abrir  { background: rgba(34,197,94,0.15);  color: #22c55e; border: 1px solid rgba(34,197,94,0.4); }
+.btn-fechar { background: rgba(239,68,68,0.15);   color: #ef4444; border: 1px solid rgba(239,68,68,0.4); }
+.btn-auto   { background: rgba(124,58,237,0.15);  color: #a78bfa; border: 1px solid rgba(124,58,237,0.4); }
+.btn-mnt:hover { filter: brightness(1.3); transform: translateY(-1px); }
+.btn-mnt:active { transform: translateY(0); }
+.modo-tag { text-align: center; font-size: 0.65rem; letter-spacing: 2px; margin-top: 10px; font-family: monospace; }
+.modo-tag.auto { color: #22c55e; }
+.modo-tag.manual { color: #f97316; }
+
+.total-bar {
+  background: #111118; border: 1px solid #1e1e2e; border-radius: 8px;
+  padding: 14px 28px; text-align: center; margin-bottom: 20px;
+  width: 100%; max-width: 500px;
+}
+.total-bar span { font-size: 2.2rem; font-weight: 700; color: #22c55e; }
+.total-bar small { display: block; font-size: 0.7rem; color: #64748b; letter-spacing: 2px; }
+
+.vagas-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  width: 100%; max-width: 500px; margin-bottom: 20px;
+}
+.vaga-card {
+  background: #111118; border: 2px solid #1e1e2e; border-radius: 12px;
+  padding: 24px 16px; text-align: center; transition: border-color 0.4s, background 0.4s;
+}
+.vaga-card.livre   { border-color: #22c55e; background: rgba(34,197,94,0.05); }
+.vaga-card.ocupado { border-color: #ef4444; background: rgba(239,68,68,0.05); }
+.vaga-num { font-size: 0.65rem; letter-spacing: 3px; color: #64748b; margin-bottom: 10px; }
+.vaga-icon { font-size: 2.8rem; margin-bottom: 8px; }
+.vaga-status { font-size: 1rem; font-weight: 700; color: #64748b; letter-spacing: 2px; }
+.vaga-card.livre   .vaga-status { color: #22c55e; }
+.vaga-card.ocupado .vaga-status { color: #ef4444; }
+
+.log-box {
+  background: #080810; border: 1px solid #1e1e2e; border-radius: 6px;
+  width: 100%; max-width: 500px; height: 130px; overflow-y: auto;
+  padding: 10px 14px; font-family: monospace; font-size: 0.72rem; color: #64748b;
+}
+.log-entry { margin-bottom: 3px; }
+.log-ts  { color: #475569; margin-right: 6px; }
+.log-sys { color: #7c3aed; }
+.log-sub { color: #06b6d4; }
+.log-cmd { color: #f97316; }
+.log-err { color: #ef4444; }
+footer { margin-top: 20px; font-size: 0.65rem; letter-spacing: 2px; color: #1e1e2e; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+&lt;h1&gt;🅿️ Smart Parking IoT&lt;/h1&gt;
+&lt;div class="sub"&gt;SENAI · Grupo 5 · 2 Vagas + Cancela MG90S · Tempo Real&lt;/div&gt;
+
+&lt;div class="status-bar"&gt;
+  &lt;div class="dot" id="dot"&gt;&lt;/div&gt;
+  &lt;span id="conn-txt"&gt;Conectando...&lt;/span&gt;
+&lt;/div&gt;
+
+&lt;!-- PAINEL DA CANCELA --&gt;
+&lt;div class="cancela-panel" id="cancela-panel"&gt;
+  &lt;div class="cancela-header"&gt;
+    &lt;span class="cancela-title"&gt;⚙️ CANCELA MG90S&lt;/span&gt;
+    &lt;span class="cancela-badge aberta" id="cancela-badge"&gt;AGUARDANDO&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;div class="cancela-icon-row" id="cancela-icon"&gt;🚧&lt;/div&gt;
+  &lt;div class="cancela-btns"&gt;
+    &lt;button class="btn-mnt btn-abrir"  onclick="cmdCancela('ABRIR')"&gt;🔧 ABRIR CANCELA&lt;/button&gt;
+    &lt;button class="btn-mnt btn-fechar" onclick="cmdCancela('FECHAR')"&gt;🔒 FECHAR CANCELA&lt;/button&gt;
+    &lt;button class="btn-mnt btn-auto"   onclick="cmdCancela('AUTO')"&gt;🤖 MODO AUTO&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;div class="modo-tag auto" id="modo-tag"&gt;// MODO: AUTOMÁTICO&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class="total-bar"&gt;
+  &lt;span id="total-livre"&gt;–&lt;/span&gt;
+  &lt;small&gt;VAGAS DISPONÍVEIS&lt;/small&gt;
+&lt;/div&gt;
+
+&lt;div class="vagas-grid"&gt;
+  &lt;div class="vaga-card" id="card-v1"&gt;
+    &lt;div class="vaga-num"&gt;VAGA 01&lt;/div&gt;
+    &lt;div class="vaga-icon"&gt;🚗&lt;/div&gt;
+    &lt;div class="vaga-status" id="status-v1"&gt;AGUARDANDO&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="vaga-card" id="card-v2"&gt;
+    &lt;div class="vaga-num"&gt;VAGA 02&lt;/div&gt;
+    &lt;div class="vaga-icon"&gt;🚗&lt;/div&gt;
+    &lt;div class="vaga-status" id="status-v2"&gt;AGUARDANDO&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class="log-box" id="log"&gt;&lt;/div&gt;
+&lt;footer&gt;SENAI · IoT · Grupo 5 · 2025&lt;/footer&gt;
+
+&lt;script&gt;
+const TOPIC_V1     = "senai/g93611/grupo5/parking/vaga1";
+const TOPIC_V2     = "senai/g93611/grupo5/parking/vaga2";
+const TOPIC_TOTAL  = "senai/g93611/grupo5/parking/total_livre";
+const TOPIC_CS     = "senai/g93611/grupo5/parking/cancela/status";
+const TOPIC_CMD    = "senai/g93611/grupo5/parking/cancela/cmd";
+const BROKER_URL   = "ws://broker.hivemq.com:8000/mqtt";
+
+const dot       = document.getElementById('dot');
+const connTxt   = document.getElementById('conn-txt');
+const cardV1    = document.getElementById('card-v1');
+const cardV2    = document.getElementById('card-v2');
+const statusV1  = document.getElementById('status-v1');
+const statusV2  = document.getElementById('status-v2');
+const totalEl   = document.getElementById('total-livre');
+const logBox    = document.getElementById('log');
+const cancelaPanel = document.getElementById('cancela-panel');
+const cancelaBadge = document.getElementById('cancela-badge');
+const cancelaIcon  = document.getElementById('cancela-icon');
+const modoTag      = document.getElementById('modo-tag');
+
+function log(msg, type='sys') {
+  const t = new Date().toLocaleTimeString('pt-BR', {hour12:false});
+  const d = document.createElement('div');
+  d.className = 'log-entry';
+  d.innerHTML = `&lt;span class="log-ts"&gt;[${t}]&lt;/span&gt;&lt;span class="log-${type}"&gt;${msg}&lt;/span&gt;`;
+  logBox.appendChild(d);
+  logBox.scrollTop = logBox.scrollHeight;
+  while (logBox.children.length &gt; 80) logBox.removeChild(logBox.firstChild);
+}
+
+function atualizarVaga(card, statusEl, livre) {
+  card.className = 'vaga-card ' + (livre ? 'livre' : 'ocupado');
+  statusEl.textContent = livre ? 'LIVRE' : 'OCUPADO';
+}
+
+function atualizarCancela(statusStr) {
+  const aberta    = statusStr.includes('ABERTA');
+  const manutencao = statusStr.includes('MANUTENCAO');
+  const modo = manutencao ? 'manutencao' : (aberta ? 'aberta' : 'fechada');
+  cancelaPanel.className = 'cancela-panel ' + modo;
+  cancelaBadge.className = 'cancela-badge ' + modo;
+  cancelaBadge.textContent = statusStr;
+  cancelaIcon.textContent  = aberta ? '🔓' : '🔒';
+  if (manutencao) {
+    modoTag.textContent = '// MODO: MANUTENÇÃO MANUAL';
+    modoTag.className = 'modo-tag manual';
+  } else if (statusStr === 'MODO AUTOMATICO' || !manutencao) {
+    modoTag.textContent = '// MODO: AUTOMÁTICO';
+    modoTag.className = 'modo-tag auto';
+  }
+}
+
+const clientId = 'senai_parking_web_' + Math.random().toString(36).substr(2,6);
+const client = mqtt.connect(BROKER_URL, { clientId, clean: true });
+
+client.on('connect', () => {
+  dot.className = 'dot ok';
+  connTxt.className = 'ok';
+  connTxt.textContent = 'CONECTADO';
+  log('Conectado ao broker HiveMQ!', 'sys');
+  client.subscribe([TOPIC_V1, TOPIC_V2, TOPIC_TOTAL, TOPIC_CS], { qos: 0 });
+  log('Aguardando dados do ESP8266...', 'sys');
+});
+
+client.on('message', (topic, payload) => {
+  const msg = payload.toString();
+  log(`← ${topic.split('/').pop()}: ${msg}`, 'sub');
+
+  if (topic === TOPIC_TOTAL) {
+    const n = parseInt(msg);
+    totalEl.textContent = isNaN(n) ? '–' : n;
+    totalEl.style.color = n === 0 ? '#ef4444' : '#22c55e';
+  }
+  if (topic === TOPIC_CS) {
+    atualizarCancela(msg);
+  }
+  if (topic === TOPIC_V1 || topic === TOPIC_V2) {
+    try {
+      const data = JSON.parse(msg);
+      const livre = data.livre === true;
+      if (topic === TOPIC_V1) atualizarVaga(cardV1, statusV1, livre);
+      else                     atualizarVaga(cardV2, statusV2, livre);
+    } catch(e) {
+      const livre = msg.toUpperCase().includes('LIVRE');
+      if (topic === TOPIC_V1) atualizarVaga(cardV1, statusV1, livre);
+      else                     atualizarVaga(cardV2, statusV2, livre);
+    }
+  }
+});
+
+function cmdCancela(cmd) {
+  if (!client.connected) { log('MQTT não conectado!', 'err'); return; }
+  client.publish(TOPIC_CMD, cmd);
+  log(`→ CMD cancela: ${cmd}`, 'cmd');
+}
+
+client.on('error', err =&gt; {
+  dot.className = 'dot err';
+  connTxt.className = 'err';
+  connTxt.textContent = 'ERRO';
+  log('Erro MQTT: ' + err.message, 'err');
+});
+client.on('close', () =&gt; {
+  dot.className = 'dot err';
+  connTxt.textContent = 'Reconectando...';
+  log('Conexão encerrada.', 'err');
+});
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+    </div>
+  </div>
+
+  <!-- ── SEÇÃO 10 ── -->
+  <div class="section" id="s10">
+    <div class="section-header">
+      <div class="section-num">10</div>
+      <h2 class="section-title">Como Testar o Projeto</h2>
+    </div>
+
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Monte o circuito</strong> seguindo a tabela de pinos da Seção 5. Conecte o servo MG90S em D2 com alimentação de 5V (pino VIN).</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Ajuste o potenciômetro dos FC-51</strong> até o LED do sensor apagar quando houver objeto na frente.</div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Faça upload do firmware</strong> — edite SSID/senha e carregue via Arduino IDE. Abra o Monitor Serial (115200 baud) e confirme que o servo se move para 90° ao iniciar.</div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-body"><strong>Teste a lógica automática:</strong> cubra ambos os sensores → a cancela deve fechar (0°). Remova um objeto → a cancela abre (90°) automaticamente.</div></div>
+      <div class="step"><div class="step-num orange">5</div><div class="step-body"><strong class="orange">Teste o modo manutenção:</strong> abra o dashboard, clique em "🔒 FECHAR CANCELA" — o servo deve fechar independentemente dos sensores. Clique em "🤖 MODO AUTO" para retornar ao automático.</div></div>
+      <div class="step"><div class="step-num">6</div><div class="step-body"><strong>Verifique o status no dashboard:</strong> o painel da cancela muda de cor (verde = aberta, vermelho = fechada, laranja = manutenção) em tempo real.</div></div>
+    </div>
+  </div>
+
+  <!-- ── SEÇÃO 11 ── -->
+  <div class="section" id="s11">
+    <div class="section-header">
+      <div class="section-num">11</div>
+      <h2 class="section-title">Solução de Problemas</h2>
+    </div>
+
+    <table>
+      <thead>
+        <tr><th>Problema</th><th>Causa Provável</th><th>Solução</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>ESP8266 não conecta ao Wi-Fi</td><td>SSID ou senha incorretos / rede 5GHz</td><td>Verifique credenciais. O ESP8266 só suporta redes 2.4GHz.</td></tr>
+        <tr><td>Servo não se move</td><td>Alimentação insuficiente ou pino errado</td><td>Confirme que o fio vermelho está em 5V (VIN), não em 3.3V. Verifique conexão do fio laranja em D2.</td></tr>
+        <tr><td>Servo treme ou vibra</td><td>Fonte de 3.3V insuficiente para o MG90S</td><td>Use o pino VIN (5V) ou fonte externa. Nunca alimente o MG90S com 3.3V.</td></tr>
+        <tr><td>Cancela vai para posição errada</td><td>Ângulos invertidos para a montagem</td><td>Troque <code>ANGULO_ABERTA</code> e <code>ANGULO_FECHADA</code> no código (ex: 0 e 90 → 90 e 0).</td></tr>
+        <tr><td>Botões de manutenção não funcionam</td><td>MQTT desconectado ou tópico errado</td><td>Verifique conexão MQTT no dashboard (indicador verde). Confirme que o ESP8266 está subscrito em <code>cancela/cmd</code>.</td></tr>
+        <tr><td>Status da cancela não atualiza</td><td>Tópico retained não recebido</td><td>Recarregue o dashboard. O status é publicado com <code>retain=true</code> e chega assim que o MQTT conectar.</td></tr>
+        <tr><td>Sensor com lógica invertida</td><td>Modelo FC-51 com saída invertida</td><td>Altere no código: <code>digitalRead == LOW</code> para "livre".</td></tr>
+        <tr><td>Dashboard mostra "ERRO"</td><td>Porta 8000 bloqueada na rede</td><td>Tente outra rede ou use hotspot do celular. A porta 8000 é necessária para WebSocket.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="info-box orange" style="margin-top:20px">
+      <strong>⚙️ Dica de ângulo:</strong> Se o servo girar no sentido errado, ajuste os valores de <code>ANGULO_ABERTA</code> e <code>ANGULO_FECHADA</code> no firmware. Valores entre 0° e 180° são suportados pelo MG90S.
+    </div>
+  </div>
+
+  <footer>SENAI · IoT · Grupo 5 · Smart Parking + Cancela MG90S · 2025 · Guia Técnico Completo</footer>
+</div>
+</body>
+</html>
